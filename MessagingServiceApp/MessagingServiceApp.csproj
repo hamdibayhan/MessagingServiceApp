@@ -23,5 +23,8 @@
   <ItemGroup>
     <Folder Include="Data\" />
     <Folder Include="Data\Entity\" />
+    <Folder Include="Dto\" />
+    <Folder Include="Dto\ApiResponse\" />
+    <Folder Include="Libraries\" />
   </ItemGroup>
 </Project>
