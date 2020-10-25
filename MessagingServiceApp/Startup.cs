@@ -4,6 +4,8 @@ using IdentityServer4.AccessTokenValidation;
 using MessagingServiceApp.Data;
 using MessagingServiceApp.Data.Entity;
 using MessagingServiceApp.Dto.ApiResponse;
+using MessagingServiceApp.Interfaces;
+using MessagingServiceApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -61,6 +63,7 @@ namespace MessagingServiceApp
                 };
             });
 
+            services.AddTransient<IAccountService, AccountService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
