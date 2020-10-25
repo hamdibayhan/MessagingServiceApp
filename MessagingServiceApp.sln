@@ -3,6 +3,8 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessagingServiceApp", "MessagingServiceApp\MessagingServiceApp.csproj", "{87DA4A7B-FCA5-435A-9D3A-C6DA815DAF45}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MessagingServiceAppTest", "MessagingServiceAppTest\MessagingServiceAppTest.csproj", "{45D16D5B-E5A2-43E3-97BD-4BE76F72D2BB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -13,5 +15,9 @@ Global
 		{87DA4A7B-FCA5-435A-9D3A-C6DA815DAF45}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{87DA4A7B-FCA5-435A-9D3A-C6DA815DAF45}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{87DA4A7B-FCA5-435A-9D3A-C6DA815DAF45}.Release|Any CPU.Build.0 = Release|Any CPU
+		{45D16D5B-E5A2-43E3-97BD-4BE76F72D2BB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{45D16D5B-E5A2-43E3-97BD-4BE76F72D2BB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{45D16D5B-E5A2-43E3-97BD-4BE76F72D2BB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{45D16D5B-E5A2-43E3-97BD-4BE76F72D2BB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
