@@ -75,10 +75,9 @@ namespace MessagingAppApiTest.Controllers
                 if (!passwordCheck.Succeeded)
                     return BadRequest(Response<string>.GetError(null, $"User password is wrong with email '{model.Email}'"));
 
-                var tokenHandler = new JwtSecurityTokenHandler();
-                var token = accountService.GetLoginToken(user, tokenHandler);
-                if(token != null)
-                    return Ok(new { token = tokenHandler.WriteToken(token) });
+                var token = accountService.GetLoginToken(user);
+                if (token != null)
+                    return Ok(new { token });
             }
             catch (Exception ex)
             {

@@ -10,7 +10,7 @@ namespace MessagingServiceApp.Interfaces
     public interface IAccountService
     {
         IdentityResult CreateUser(RegisterParams model);
-        SecurityToken GetLoginToken(User user, JwtSecurityTokenHandler tokenHandler);
+        string GetLoginToken(User user);
         Dictionary<string, string> GetErrorObject(IEnumerable<IdentityError> errors);
     }
 }

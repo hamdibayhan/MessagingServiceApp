@@ -19,15 +19,12 @@ namespace MessagingServiceApp.Services
     public class AccountService : IAccountService
     {
         private readonly UserManager<User> userManager;
-        private readonly ILogger<AccountService> logger;
         private readonly IConfiguration config;
 
         public AccountService(UserManager<User> userManager,
-            ILogger<AccountService> logger,
             IConfiguration config)
         {
             this.userManager = userManager;
-            this.logger = logger;
             this.config = config;
         }
 
@@ -42,8 +39,10 @@ namespace MessagingServiceApp.Services
             return userManager.CreateAsync(user, model.Password).Result;
         }
 
-        public SecurityToken GetLoginToken(User user, JwtSecurityTokenHandler tokenHandler)
+        public string GetLoginToken(User user)
         {
+            var tokenHandler = new JwtSecurityTokenHandler();
+
             var claims = new List<Claim>
                 {
                     new Claim(JwtRegisteredClaimNames.Sub, user.Id),
@@ -62,7 +61,10 @@ namespace MessagingServiceApp.Services
                 SigningCredentials = credentials
             };
 
-            return tokenHandler.CreateToken(tokenDescriptor);
+            var tokenObject = tokenHandler.CreateToken(tokenDescriptor);
+            var token = tokenObject != null ? tokenHandler.WriteToken(tokenObject) : null;
+
+            return token;
         }
 
         public Dictionary<string, string> GetErrorObject(IEnumerable<IdentityError> errors)
