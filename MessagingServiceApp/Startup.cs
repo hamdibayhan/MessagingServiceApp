@@ -75,6 +75,7 @@ namespace MessagingServiceApp
             services.AddAutoMapper(typeof(Startup));
 
             services.AddTransient<IAccountService, AccountService>();
+            services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IUserProviderService, UserProviderService>();
         }
 
