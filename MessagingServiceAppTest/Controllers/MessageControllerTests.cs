@@ -78,7 +78,7 @@ namespace MessagingServiceAppTest.Controllers
         }
 
         [Fact]
-        public async Task SendMessage_NullInsertMongoResult_InsertMongoResultCannotNull()
+        public async Task SendMessage_NullInsertMongoResult_InsertMongoResultCannotBeNull()
         {
             var sendMessageParams = Mock.Of<SendMessageParams>();
             sendMessageParams.ContactUserName = _users[1].UserName;
@@ -92,6 +92,73 @@ namespace MessagingServiceAppTest.Controllers
 
             // act
             var result = await controller.SendMessageAsync(sendMessageParams);
+            var objResult = result as ObjectResult;
+
+            // assert
+            Assert.NotNull(objResult);
+            Assert.True(objResult is BadRequestObjectResult);
+            Assert.Equal(StatusCodes.Status400BadRequest, objResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task MessageList_ValidProcess_SendingMessageToContectUser()
+        {
+            var listMessageParams = Mock.Of<MessageListParams>();
+            listMessageParams.ContactUserUserName = _users[1].UserName;
+            var messageInfoResponseList = Mock.Of<List<MessageInfoResponse>>();
+
+            // arrange
+            userProviderService.Setup(x => x.GetUserWithUserNameAsync(_users[1].UserName)).Returns(Task.FromResult(_users[1]));
+            userProviderService.Setup(x => x.GetCurrentUser()).Returns(Task.FromResult(_users[1]));
+            messageService.Setup(x => x.GetMessageInfoListAsync(listMessageParams, _users[1], _users[1])).Returns(Task.FromResult(messageInfoResponseList));
+
+            var controller = new MessageController(messageService.Object, userProviderService.Object, logger.Object);
+
+            // act
+            var result = await controller.MessageListAsync(listMessageParams);
+            var objResult = result as ObjectResult;
+
+            // assert
+            Assert.NotNull(objResult);
+            Assert.True(objResult is OkObjectResult);
+            Assert.Equal(StatusCodes.Status200OK, objResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task MessageList_NullContactUser_ContactUserMustBeExist()
+        {
+            var listMessageParams = Mock.Of<MessageListParams>();
+
+            // arrange
+            userProviderService.Setup(x => x.GetUserWithUserNameAsync(_users[1].UserName)).Returns(Task.FromResult((User)null));
+
+            var controller = new MessageController(messageService.Object, userProviderService.Object, logger.Object);
+
+            // act
+            var result = await controller.MessageListAsync(listMessageParams);
+            var objResult = result as ObjectResult;
+
+            // assert
+            Assert.NotNull(objResult);
+            Assert.True(objResult is NotFoundObjectResult);
+            Assert.Equal(StatusCodes.Status404NotFound, objResult.StatusCode);
+        }
+
+        [Fact]
+        public async Task MessageList_NullMessageInfoList_MessageInfoListResultModelCannotBeNull()
+        {
+            var listMessageParams = Mock.Of<MessageListParams>();
+            listMessageParams.ContactUserUserName = _users[1].UserName;
+
+            // arrange
+            userProviderService.Setup(x => x.GetUserWithUserNameAsync(_users[1].UserName)).Returns(Task.FromResult(_users[1]));
+            userProviderService.Setup(x => x.GetCurrentUser()).Returns(Task.FromResult(_users[1]));
+            messageService.Setup(x => x.GetMessageInfoListAsync(listMessageParams, _users[1], _users[1])).Returns(Task.FromResult((List<MessageInfoResponse>)null));
+
+            var controller = new MessageController(messageService.Object, userProviderService.Object, logger.Object);
+
+            // act
+            var result = await controller.MessageListAsync(listMessageParams);
             var objResult = result as ObjectResult;
 
             // assert
