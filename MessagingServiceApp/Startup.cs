@@ -3,6 +3,7 @@ using System.Text;
 using IdentityServer4.AccessTokenValidation;
 using MessagingServiceApp.Data;
 using MessagingServiceApp.Data.Entity;
+using MessagingServiceApp.Data.Interfaces;
 using MessagingServiceApp.Dto.ApiResponse;
 using MessagingServiceApp.Interfaces;
 using MessagingServiceApp.Services;
@@ -15,6 +16,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 
 namespace MessagingServiceApp
@@ -62,6 +64,12 @@ namespace MessagingServiceApp
                     ValidateAudience = false
                 };
             });
+
+            services.Configure<MongoDatabaseSettings>(
+                Configuration.GetSection(nameof(MongoDatabaseSettings)));
+
+            services.AddSingleton<IMongoDatabaseSettings>(sp =>
+                sp.GetRequiredService<IOptions<MongoDatabaseSettings>>().Value);
 
             services.AddTransient<IAccountService, AccountService>();
         }
