@@ -9,6 +9,7 @@ namespace MessagingServiceApp.Dto.Mapping
         public MessageInfoProfile()
         {
             CreateMap<MessageInfo, CreateMessageInfoResponse>();
+            CreateMap<MessageInfo, MessageInfoResponse>();
         }
     }
 }
