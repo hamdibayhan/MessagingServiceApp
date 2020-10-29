@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using MessagingAppApiTest.Controllers;
+using MessagingServiceApp.Controllers;
 using MessagingServiceApp.Data.Entity;
 using MessagingServiceApp.Dto.ApiParameter;
 using MessagingServiceApp.Interfaces;

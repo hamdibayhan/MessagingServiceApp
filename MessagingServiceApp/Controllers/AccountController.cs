@@ -11,7 +11,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
-namespace MessagingAppApiTest.Controllers
+namespace MessagingServiceApp.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
