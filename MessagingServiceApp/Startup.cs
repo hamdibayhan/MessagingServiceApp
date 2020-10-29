@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using System.Text;
+using AutoMapper;
 using IdentityServer4.AccessTokenValidation;
 using MessagingServiceApp.Data;
 using MessagingServiceApp.Data.Entity;
@@ -70,6 +71,8 @@ namespace MessagingServiceApp
 
             services.AddSingleton<IMongoDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<MongoDatabaseSettings>>().Value);
+
+            services.AddAutoMapper(typeof(Startup));
 
             services.AddTransient<IAccountService, AccountService>();
         }
