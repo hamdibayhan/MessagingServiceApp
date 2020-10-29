@@ -7,6 +7,8 @@ using MessagingServiceApp.Dto.ApiParameter;
 using MessagingServiceApp.Interfaces;
 using MongoDB.Driver;
 using MessagingServiceApp.Data.Interfaces;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 
 namespace MessagingServiceApp.Services
 {
@@ -16,7 +18,6 @@ namespace MessagingServiceApp.Services
         private readonly IMapper mapper;
 
         public MessageService(IMongoDatabaseSettings settings,
-            IUserProviderService userProvider,
             IMapper mapper)
         {
             var client = new MongoClient(settings.ConnectionString);
@@ -32,13 +33,13 @@ namespace MessagingServiceApp.Services
             var messageInfo = GetInsertMessageInfo(senderUser, contactUser, message);
             MessageInfoToMongo(messageInfo);
 
-            return GetResponseMessageInfo(messageInfo);
+            return GetResponseCreateMessageInfo(messageInfo);
         }
 
         private void MessageInfoToMongo(MessageInfo message) =>
             mongoMessagesCollection.InsertOne(message);
 
-        private CreateMessageInfoResponse GetResponseMessageInfo(MessageInfo insertMessage)
+        private CreateMessageInfoResponse GetResponseCreateMessageInfo(MessageInfo insertMessage)
         {
             return mapper.Map<CreateMessageInfoResponse>(insertMessage);
         }
@@ -50,8 +51,10 @@ namespace MessagingServiceApp.Services
             {
                 SenderUserId = senderUser.Id,
                 SenderUserEmail = senderUser.Email,
+                SenderUserUserName = senderUser.Email,
                 ContactUserId = contactUser.Id,
                 ContactUserEmail = contactUser.Email,
+                ContactUserUserName = contactUser.Email,
                 MessageText = message.MessageText,
                 CreatedAt = DateTime.Now,
             };

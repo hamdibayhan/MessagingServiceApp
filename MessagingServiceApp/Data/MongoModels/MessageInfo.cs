@@ -14,9 +14,13 @@ namespace MessagingServiceApp.Data.MongoModel
 
         public string SenderUserEmail { get; set; }
 
+        public string SenderUserUserName { get; set; }
+
         public string ContactUserId { get; set; }
 
         public string ContactUserEmail { get; set; }
+
+        public string ContactUserUserName { get; set; }
 
         public string MessageText { get; set; }
 
