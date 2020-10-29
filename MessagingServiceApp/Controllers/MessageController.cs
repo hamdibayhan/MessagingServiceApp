@@ -58,7 +58,7 @@ namespace MessagingServiceApp.Controllers
         [HttpGet("messageList")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
-        public async Task<IActionResult> MessageList([FromBody] MessageListParams messageList)
+        public async Task<IActionResult> MessageListAsync([FromBody] MessageListParams messageList)
         {
             try
             {
