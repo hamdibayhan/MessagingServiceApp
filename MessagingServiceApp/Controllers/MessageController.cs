@@ -44,7 +44,7 @@ namespace MessagingServiceApp.Controllers
 
                 var result = messageService.CreateMessageInfo(messageInfo, senderUser, contactUser);
                 if (result != null)
-                    return Ok(result);
+                    return Ok(Response<CreateMessageInfoResponse>.GetSuccess(result));
             }
             catch (Exception ex)
             {

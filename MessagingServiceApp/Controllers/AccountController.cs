@@ -47,7 +47,7 @@ namespace MessagingServiceApp.Controllers
 
                 var result = accountService.CreateUser(model);
                 if (result.Succeeded)
-                    return Created("", model);
+                    return Created("", Response<RegisterParams>.GetSuccess(model));
                 else
                     return new BadRequestObjectResult(Response<Dictionary<string, string>>
                         .GetError(null, "There is one or more register error", accountService.GetErrorObject(result.Errors)));
@@ -77,7 +77,7 @@ namespace MessagingServiceApp.Controllers
 
                 var token = accountService.GetLoginToken(user);
                 if (token != null)
-                    return Ok(new { token });
+                    return Ok(Response<object>.GetSuccess(new { token }));
             }
             catch (Exception ex)
             {
