@@ -36,12 +36,50 @@ namespace MessagingServiceApp.Services
             return GetResponseCreateMessageInfo(messageInfo);
         }
 
+        public async Task<List<MessageInfoResponse>> GetMessageInfoListAsync(MessageListParams messageList,
+                                                                             User senderUser, User contactUser)
+        {
+            var data = new List<MessageInfoResponse>();
+            var findResults = await GetMessageInfosFromMongoAsync(messageList.PageNumber,
+                                                                  senderUser, contactUser);
+
+            foreach (var item in findResults)
+            {
+                data.Add(GetResponseMessageInfo(item));
+            }
+
+            return data;
+        }
+
         private void MessageInfoToMongo(MessageInfo message) =>
             mongoMessagesCollection.InsertOne(message);
 
         private CreateMessageInfoResponse GetResponseCreateMessageInfo(MessageInfo insertMessage)
         {
             return mapper.Map<CreateMessageInfoResponse>(insertMessage);
+        }
+
+        private MessageInfoResponse GetResponseMessageInfo(MessageInfo insertMessage)
+        {
+            return mapper.Map<MessageInfoResponse>(insertMessage);
+        }
+
+        private async Task<List<MessageInfo>> GetMessageInfosFromMongoAsync(int pageNumber,
+                                                                            User senderUser,
+                                                                            User contactUser)
+        {
+            // TODO page size move to appsettings file
+            var messageItemAmountPerPage = 3;
+
+            var findFilter = Builders<MessageInfo>.Filter.Eq("SenderUserId", senderUser.Id)
+                             & Builders<MessageInfo>.Filter.Eq("ContactUserId", contactUser.Id);
+            var sortFilter = Builders<MessageInfo>.Sort.Descending("CreateAt");
+
+            return await mongoMessagesCollection.Find(findFilter)
+                                                .Sort(sortFilter)
+                                                .Skip((pageNumber - 1) * messageItemAmountPerPage)
+                                                .Limit(messageItemAmountPerPage)
+                                                .ToListAsync();
         }
 
         private MessageInfo GetInsertMessageInfo(User senderUser, User contactUser,

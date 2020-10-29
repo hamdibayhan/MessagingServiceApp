@@ -7,6 +7,7 @@ using System.Net.Mime;
 using MessagingServiceApp.Dto.ApiResponse;
 using System;
 using Microsoft.Extensions.Logging;
+using System.Collections.Generic;
 
 namespace MessagingServiceApp.Controllers
 {
@@ -45,6 +46,32 @@ namespace MessagingServiceApp.Controllers
                 var result = messageService.CreateMessageInfo(messageInfo, senderUser, contactUser);
                 if (result != null)
                     return Ok(Response<CreateMessageInfoResponse>.GetSuccess(result));
+            }
+            catch (Exception ex)
+            {
+                logger.LogError(ex);
+            }
+            return BadRequest(Response<string>.GetError(null, "An error occured"));
+        }
+
+        // POST api/message/messageList
+        [HttpGet("messageList")]
+        [Consumes(MediaTypeNames.Application.Json)]
+        [Produces(MediaTypeNames.Application.Json)]
+        public async Task<IActionResult> MessageList([FromBody] MessageListParams messageList)
+        {
+            try
+            {
+                var senderUser = await userProvider.GetCurrentUser();
+                var contactUser = await userProvider.GetUserWithUserNameAsync(messageList.ContactUserUserName);
+
+                if (contactUser == null)
+                    return NotFound(Response<string>.GetError(null, $"There is no user with name: '{messageList.ContactUserUserName}'"));
+
+                var data = await messageService.GetMessageInfoListAsync(messageList, senderUser, 
+                                                                        contactUser);
+                if (data != null)
+                    return Ok(Response<List<MessageInfoResponse>>.GetSuccess(data));
             }
             catch (Exception ex)
             {
