@@ -3,6 +3,7 @@ using System.Text;
 using AutoMapper;
 using IdentityServer4.AccessTokenValidation;
 using MessagingServiceApp.Data;
+using MessagingServiceApp.Data.Cache.Redis;
 using MessagingServiceApp.Data.Entity;
 using MessagingServiceApp.Data.Interfaces;
 using MessagingServiceApp.Dto.ApiResponse;
@@ -73,6 +74,9 @@ namespace MessagingServiceApp
 
             services.AddSingleton<IMongoDatabaseSettings>(sp =>
                 sp.GetRequiredService<IOptions<MongoDatabaseSettings>>().Value);
+
+            services.AddSingleton<RedisServer>();
+            services.AddSingleton<ICacheService, RedisCacheService>();
 
             services.AddAutoMapper(typeof(Startup));
 

@@ -34,5 +34,7 @@
     <Folder Include="Dto\ApiResponse\" />
     <Folder Include="Libraries\" />
     <Folder Include="Dto\Mapping\" />
+    <Folder Include="Data\Cache\" />
+    <Folder Include="Data\Cache\Redis\" />
   </ItemGroup>
 </Project>
