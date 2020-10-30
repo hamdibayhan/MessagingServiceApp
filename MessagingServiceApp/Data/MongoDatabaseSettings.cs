@@ -7,5 +7,6 @@ namespace MessagingServiceApp.Data
         public string ConnectionString { get; set; }
         public string DatabaseName { get; set; }
         public string MessageInfosCollectionName { get; set; }
+        public string BlockUsersCollectionName { get; set; }
     }
 }
