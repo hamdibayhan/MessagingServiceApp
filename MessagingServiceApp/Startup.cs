@@ -83,6 +83,7 @@ namespace MessagingServiceApp
             services.AddTransient<IAccountService, AccountService>();
             services.AddTransient<IMessageService, MessageService>();
             services.AddTransient<IUserProviderService, UserProviderService>();
+            services.AddTransient<IUserService, UserService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
