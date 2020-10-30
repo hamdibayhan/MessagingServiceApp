@@ -33,7 +33,7 @@ namespace MessagingServiceApp.Services
             return await userManager.FindByNameAsync(userName);
         }
 
-        private async Task<User> GetUserWithEmailAsync(string userEmail)
+        public async Task<User> GetUserWithEmailAsync(string userEmail)
         {
             return await userManager.FindByEmailAsync(userEmail);
         }

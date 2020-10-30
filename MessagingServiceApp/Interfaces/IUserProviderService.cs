@@ -7,5 +7,6 @@ namespace MessagingServiceApp.Interfaces
     {
         Task<User> GetCurrentUser();
         Task<User> GetUserWithUserNameAsync(string userName);
+        Task<User> GetUserWithEmailAsync(string userEmail);
     }
 }
