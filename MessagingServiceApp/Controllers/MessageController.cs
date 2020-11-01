@@ -21,7 +21,8 @@ namespace MessagingServiceApp.Controllers
         private readonly IUserProviderService userProvider;
         private readonly ILogger<MessageController> logger;
 
-        public MessageController(IMessageService messageService,
+        public MessageController(
+            IMessageService messageService,
             IUserProviderService userProvider,
             ILogger<MessageController> logger)
         {
@@ -71,7 +72,8 @@ namespace MessagingServiceApp.Controllers
                 if (contactUser == null)
                     return NotFound(Response<string>.GetError(null, $"There is no user with name: '{messageList.ContactUserUserName}'"));
 
-                var data = await messageService.GetMessageInfoListAsync(messageList, senderUser, 
+                var data = await messageService.GetMessageInfoListAsync(messageList,
+                                                                        senderUser, 
                                                                         contactUser);
                 if (data != null)
                     return Ok(Response<List<MessageInfoResponse>>.GetSuccess(data));

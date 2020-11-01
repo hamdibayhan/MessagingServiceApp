@@ -9,6 +9,7 @@ using MongoDB.Driver;
 using MessagingServiceApp.Data.Interfaces;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 
 namespace MessagingServiceApp.Services
 {
@@ -16,19 +17,24 @@ namespace MessagingServiceApp.Services
     {
         private readonly IMongoCollection<MessageInfo> mongoMessagesCollection;
         private readonly IMapper mapper;
+        private readonly IConfiguration config;
 
-        public MessageService(IMongoDatabaseSettings settings,
-            IMapper mapper)
+        public MessageService(
+            IMongoDatabaseSettings settings,
+            IMapper mapper,
+            IConfiguration config)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
 
             this.mongoMessagesCollection = database.GetCollection<MessageInfo>(settings.MessageInfosCollectionName);
             this.mapper = mapper;
+            this.config = config;
         }
 
         public CreateMessageInfoResponse CreateMessageInfo(SendMessageParams message,
-                                                           User senderUser, User contactUser)
+                                                           User senderUser,
+                                                           User contactUser)
         {
             var messageInfo = GetInsertMessageInfo(senderUser, contactUser, message);
             MessageInfoToMongo(messageInfo);
@@ -37,18 +43,20 @@ namespace MessagingServiceApp.Services
         }
 
         public async Task<List<MessageInfoResponse>> GetMessageInfoListAsync(MessageListParams messageList,
-                                                                             User senderUser, User contactUser)
+                                                                             User senderUser,
+                                                                             User contactUser)
         {
-            var data = new List<MessageInfoResponse>();
+            var messageInfoResponseList = new List<MessageInfoResponse>();
             var findResults = await GetMessageInfosFromMongoAsync(messageList.PageNumber,
-                                                                  senderUser, contactUser);
+                                                                  senderUser,
+                                                                  contactUser);
 
             foreach (var item in findResults)
             {
-                data.Add(GetResponseMessageInfo(item));
+                messageInfoResponseList.Add(GetResponseMessageInfo(item));
             }
 
-            return data;
+            return messageInfoResponseList;
         }
 
         private void MessageInfoToMongo(MessageInfo message) =>
@@ -68,8 +76,7 @@ namespace MessagingServiceApp.Services
                                                                             User senderUser,
                                                                             User contactUser)
         {
-            // TODO page size move to appsettings file
-            var messageItemAmountPerPage = 3;
+            var messageItemAmountPerPage = int.Parse(config["Settings:MessageItemAmountPerPage"]);
 
             var findFilter = Builders<MessageInfo>.Filter.Eq("SenderUserId", senderUser.Id)
                              & Builders<MessageInfo>.Filter.Eq("ContactUserId", contactUser.Id);
@@ -82,7 +89,8 @@ namespace MessagingServiceApp.Services
                                                 .ToListAsync();
         }
 
-        private MessageInfo GetInsertMessageInfo(User senderUser, User contactUser,
+        private MessageInfo GetInsertMessageInfo(User senderUser,
+                                                 User contactUser,
                                                  SendMessageParams message)
         {
             return new MessageInfo()
