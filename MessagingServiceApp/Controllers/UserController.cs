@@ -52,13 +52,15 @@ namespace MessagingServiceApp.Controllers
                 var result = userService.BlockUser(blockingUser, blockedUser);
                 if(result != null)
                     return Ok(Response<BlockUserResponse>.GetSuccess(result));
+                else
+                    return BadRequest(Response<string>.GetError(null, "User could not blocked"));
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, ex.Message);
+                return StatusCode(500, Response<string>.GetError(null, "An error occured"));
             }
 
-            return BadRequest(Response<string>.GetError(null, "An error occured"));
         }
     }
 }

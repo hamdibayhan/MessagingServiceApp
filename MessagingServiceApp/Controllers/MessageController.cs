@@ -51,17 +51,19 @@ namespace MessagingServiceApp.Controllers
 
                 var isUserBlocked = userService.IsUserAlreadyBlocked(contactUser, senderUser);
                 if (isUserBlocked)
-                    return BadRequest(Response<string>.GetError(null, $"User restricted for sending message to contact user"));
+                    return BadRequest(Response<string>.GetError(null, "User restricted for sending message to contact user"));
 
                 var result = messageService.CreateMessageInfo(messageInfo, senderUser, contactUser);
                 if (result != null)
                     return Ok(Response<CreateMessageInfoResponse>.GetSuccess(result));
+                else
+                    return BadRequest(Response<string>.GetError(null, "Message could not send"));
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, ex.Message);
+                return StatusCode(500, Response<string>.GetError(null, "An error occured"));
             }
-            return BadRequest(Response<string>.GetError(null, "An error occured"));
         }
 
         // POST api/message/messageList
@@ -84,12 +86,14 @@ namespace MessagingServiceApp.Controllers
                                                                         contactUser);
                 if (data != null)
                     return Ok(Response<List<MessageInfoResponse>>.GetSuccess(data));
+                else
+                    return BadRequest(Response<string>.GetError(null, "Message list could not get"));
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, ex.Message);
+                return StatusCode(500, Response<string>.GetError(null, "An error occured"));
             }
-            return BadRequest(Response<string>.GetError(null, "An error occured"));
         }
     }
 }

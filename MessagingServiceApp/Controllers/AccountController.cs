@@ -60,9 +60,8 @@ namespace MessagingServiceApp.Controllers
             catch (Exception ex)
             {
                 logger.LogError(ex, ex.Message);
+                return StatusCode(500, Response<string>.GetError(null, "An error occured"));
             }
-
-            return BadRequest(Response<string>.GetError(null, "An error occured"));
         }
 
         // POST api/account/login
@@ -85,12 +84,14 @@ namespace MessagingServiceApp.Controllers
                 var token = accountService.GetLoginToken(user);
                 if (token != null)
                     return Ok(Response<object>.GetSuccess(new { token }));
+                else
+                    return BadRequest(Response<string>.GetError(null, $"Token could not created with email '{model.Email}'"));
             }
             catch (Exception ex)
             {
                 logger.LogError(ex, ex.Message);
+                return StatusCode(500, Response<string>.GetError(null, "An error occured"));
             }
-            return BadRequest(Response<string>.GetError(null, "An error occured"));
         }
     }
 }
