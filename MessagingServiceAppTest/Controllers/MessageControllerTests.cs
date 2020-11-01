@@ -19,6 +19,7 @@ namespace MessagingServiceAppTest.Controllers
         private readonly Mock<ILogger<MessageController>> logger;
         private readonly Mock<IMessageService> messageService;
         private readonly Mock<IUserProviderService> userProviderService;
+        private readonly Mock<IUserService> userService;
 
         private List<User> _users = new List<User>
         {
@@ -30,6 +31,7 @@ namespace MessagingServiceAppTest.Controllers
         {
             messageService = new Mock<IMessageService>();
             userProviderService = new Mock<IUserProviderService>();
+            userService = new Mock<IUserService>();
             logger = new Mock<ILogger<MessageController>>();
         }
 
@@ -43,9 +45,10 @@ namespace MessagingServiceAppTest.Controllers
             // arrange
             userProviderService.Setup(x => x.GetUserWithUserNameAsync(_users[1].UserName)).Returns(Task.FromResult(_users[1]));
             userProviderService.Setup(x => x.GetCurrentUser()).Returns(Task.FromResult(_users[1]));
+            userService.Setup(x => x.IsUserAlreadyBlocked(_users[1], _users[1])).Returns(false);
             messageService.Setup(x => x.CreateMessageInfo(sendMessageParams, _users[1], _users[1])).Returns(createMessageInfoResponse);
 
-            var controller = new MessageController(messageService.Object, userProviderService.Object, logger.Object);
+            var controller = new MessageController(messageService.Object, userProviderService.Object, userService.Object, logger.Object);
 
             // act
             var result = await controller.SendMessageAsync(sendMessageParams);
@@ -65,7 +68,7 @@ namespace MessagingServiceAppTest.Controllers
             // arrange
             userProviderService.Setup(x => x.GetUserWithUserNameAsync(_users[1].UserName)).Returns(Task.FromResult((User)null));
 
-            var controller = new MessageController(messageService.Object, userProviderService.Object, logger.Object);
+            var controller = new MessageController(messageService.Object, userProviderService.Object, userService.Object, logger.Object);
 
             // act
             var result = await controller.SendMessageAsync(sendMessageParams);
@@ -86,9 +89,34 @@ namespace MessagingServiceAppTest.Controllers
             // arrange
             userProviderService.Setup(x => x.GetUserWithUserNameAsync(_users[1].UserName)).Returns(Task.FromResult(_users[1]));
             userProviderService.Setup(x => x.GetCurrentUser()).Returns(Task.FromResult(_users[1]));
+            userService.Setup(x => x.IsUserAlreadyBlocked(_users[1], _users[1])).Returns(false);
             messageService.Setup(x => x.CreateMessageInfo(sendMessageParams, _users[1], _users[1])).Returns((CreateMessageInfoResponse)null);
 
-            var controller = new MessageController(messageService.Object, userProviderService.Object, logger.Object);
+            var controller = new MessageController(messageService.Object, userProviderService.Object, userService.Object, logger.Object);
+
+            // act
+            var result = await controller.SendMessageAsync(sendMessageParams);
+            var objResult = result as ObjectResult;
+
+            // assert
+            Assert.NotNull(objResult);
+            Assert.True(objResult is BadRequestObjectResult);
+            Assert.Equal(StatusCodes.Status400BadRequest, objResult.StatusCode);
+        }
+
+
+        [Fact]
+        public async Task SendMessage_CheckUserBlockStatus_MustNotBeBlockStatusForSendingMessage()
+        {
+            var sendMessageParams = Mock.Of<SendMessageParams>();
+            sendMessageParams.ContactUserName = _users[1].UserName;
+
+            // arrange
+            userProviderService.Setup(x => x.GetUserWithUserNameAsync(_users[1].UserName)).Returns(Task.FromResult(_users[1]));
+            userProviderService.Setup(x => x.GetCurrentUser()).Returns(Task.FromResult(_users[1]));
+            userService.Setup(x => x.IsUserAlreadyBlocked(_users[1], _users[1])).Returns(true);
+
+            var controller = new MessageController(messageService.Object, userProviderService.Object, userService.Object, logger.Object);
 
             // act
             var result = await controller.SendMessageAsync(sendMessageParams);
@@ -112,7 +140,7 @@ namespace MessagingServiceAppTest.Controllers
             userProviderService.Setup(x => x.GetCurrentUser()).Returns(Task.FromResult(_users[1]));
             messageService.Setup(x => x.GetMessageInfoListAsync(listMessageParams, _users[1], _users[1])).Returns(Task.FromResult(messageInfoResponseList));
 
-            var controller = new MessageController(messageService.Object, userProviderService.Object, logger.Object);
+            var controller = new MessageController(messageService.Object, userProviderService.Object, userService.Object, logger.Object);
 
             // act
             var result = await controller.MessageListAsync(listMessageParams);
@@ -132,7 +160,7 @@ namespace MessagingServiceAppTest.Controllers
             // arrange
             userProviderService.Setup(x => x.GetUserWithUserNameAsync(_users[1].UserName)).Returns(Task.FromResult((User)null));
 
-            var controller = new MessageController(messageService.Object, userProviderService.Object, logger.Object);
+            var controller = new MessageController(messageService.Object, userProviderService.Object, userService.Object, logger.Object);
 
             // act
             var result = await controller.MessageListAsync(listMessageParams);
@@ -155,7 +183,7 @@ namespace MessagingServiceAppTest.Controllers
             userProviderService.Setup(x => x.GetCurrentUser()).Returns(Task.FromResult(_users[1]));
             messageService.Setup(x => x.GetMessageInfoListAsync(listMessageParams, _users[1], _users[1])).Returns(Task.FromResult((List<MessageInfoResponse>)null));
 
-            var controller = new MessageController(messageService.Object, userProviderService.Object, logger.Object);
+            var controller = new MessageController(messageService.Object, userProviderService.Object, userService.Object, logger.Object);
 
             // act
             var result = await controller.MessageListAsync(listMessageParams);
