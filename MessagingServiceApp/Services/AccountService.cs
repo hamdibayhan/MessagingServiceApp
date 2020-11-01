@@ -1,17 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
-using System.Linq;
 using System.Security.Claims;
 using System.Text;
-using System.Threading.Tasks;
 using MessagingServiceApp.Data.Entity;
 using MessagingServiceApp.Dto.ApiParameter;
 using MessagingServiceApp.Interfaces;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.Logging;
 using Microsoft.IdentityModel.Tokens;
 
 namespace MessagingServiceApp.Services
@@ -21,7 +17,8 @@ namespace MessagingServiceApp.Services
         private readonly UserManager<User> userManager;
         private readonly IConfiguration config;
 
-        public AccountService(UserManager<User> userManager,
+        public AccountService(
+            UserManager<User> userManager,
             IConfiguration config)
         {
             this.userManager = userManager;
@@ -43,31 +40,18 @@ namespace MessagingServiceApp.Services
         {
             var tokenHandler = new JwtSecurityTokenHandler();
 
-            var claims = new List<Claim>
-                {
-                    new Claim(JwtRegisteredClaimNames.Sub, user.Id),
-                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                    new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
-                    new Claim(JwtRegisteredClaimNames.Email, user.Email)
-                };
-
+            var claims = GetListClaims(user);
             var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["JwtToken:Key"]));
             var credentials = new SigningCredentials(key, SecurityAlgorithms.HmacSha512Signature);
-            var tokenDescriptor = new SecurityTokenDescriptor
-            {
-                Subject = new ClaimsIdentity(claims),
-                // Todo - Move expires hour to appsettings file
-                Expires = DateTime.UtcNow.AddHours(3),
-                SigningCredentials = credentials
-            };
 
+            var tokenDescriptor = GetTokenDescriptor(claims, credentials);
             var tokenObject = tokenHandler.CreateToken(tokenDescriptor);
             var token = tokenObject != null ? tokenHandler.WriteToken(tokenObject) : null;
 
             return token;
         }
 
-        public Dictionary<string, string> GetErrorObject(IEnumerable<IdentityError> errors)
+        public Dictionary<string, string> GetIdentityErrorObject(IEnumerable<IdentityError> errors)
         {
             var resultErrors = new Dictionary<string, string>();
             foreach (var error in errors)
@@ -76,6 +60,28 @@ namespace MessagingServiceApp.Services
             }
 
             return resultErrors;
+        }
+
+        private List<Claim> GetListClaims(User user)
+        {
+            return new List<Claim>
+            {
+                new Claim(JwtRegisteredClaimNames.Sub, user.Id),
+                new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
+                new Claim(JwtRegisteredClaimNames.UniqueName, user.UserName),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email)
+            };
+        }
+
+        private SecurityTokenDescriptor GetTokenDescriptor(List<Claim> claims, SigningCredentials credentials)
+        {
+            var expireHour = Convert.ToDouble(config["JwtToken:ExpireHour"]);
+            return new SecurityTokenDescriptor
+            {
+                Subject = new ClaimsIdentity(claims),
+                Expires = DateTime.UtcNow.AddHours(expireHour),
+                SigningCredentials = credentials
+            };
         }
     }
 }

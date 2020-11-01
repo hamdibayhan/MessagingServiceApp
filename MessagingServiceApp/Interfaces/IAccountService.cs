@@ -11,6 +11,6 @@ namespace MessagingServiceApp.Interfaces
     {
         IdentityResult CreateUser(RegisterParams model);
         string GetLoginToken(User user);
-        Dictionary<string, string> GetErrorObject(IEnumerable<IdentityError> errors);
+        Dictionary<string, string> GetIdentityErrorObject(IEnumerable<IdentityError> errors);
     }
 }

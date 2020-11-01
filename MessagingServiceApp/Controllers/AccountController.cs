@@ -52,7 +52,7 @@ namespace MessagingServiceApp.Controllers
                     return Created("", Response<RegisterParams>.GetSuccess(model));
                 else
                     return new BadRequestObjectResult(Response<Dictionary<string, string>>
-                        .GetError(null, "There is one or more register error", accountService.GetErrorObject(result.Errors)));
+                        .GetError(null, "There is one or more register error", accountService.GetIdentityErrorObject(result.Errors)));
             }
             catch (Exception ex)
             {
@@ -62,6 +62,7 @@ namespace MessagingServiceApp.Controllers
             return BadRequest(Response<string>.GetError(null, "An error occured"));
         }
 
+        // POST api/account/login
         [HttpPost("login")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
