@@ -20,9 +20,10 @@ namespace MessagingServiceApp.Controllers
         private readonly IUserProviderService userProvider;
         private readonly ILogger<UserController> logger;
 
-        public UserController(IUserService userService,
-                              IUserProviderService userProvider,
-                              ILogger<UserController> logger)
+        public UserController(
+            IUserService userService,
+            IUserProviderService userProvider,
+            ILogger<UserController> logger)
         {
             this.userService = userService;
             this.userProvider = userProvider;

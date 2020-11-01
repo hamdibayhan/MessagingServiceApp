@@ -16,10 +16,11 @@ namespace MessagingServiceApp.Services
         private readonly IMapper mapper;
         private readonly ICacheService cacheService;
 
-        public UserService(IMongoDatabaseSettings settings,
-                           IUserProviderService userProvider,
-                           IMapper mapper,
-                           ICacheService cacheService)
+        public UserService(
+            IMongoDatabaseSettings settings,
+            IUserProviderService userProvider,
+            IMapper mapper,
+            ICacheService cacheService)
         {
             var client = new MongoClient(settings.ConnectionString);
             var database = client.GetDatabase(settings.DatabaseName);
