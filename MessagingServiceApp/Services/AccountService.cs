@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
+using AutoMapper;
 using MessagingServiceApp.Data.Entity;
 using MessagingServiceApp.Dto.ApiParameter;
+using MessagingServiceApp.Dto.ApiResponse;
 using MessagingServiceApp.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
@@ -16,13 +18,16 @@ namespace MessagingServiceApp.Services
     {
         private readonly UserManager<User> userManager;
         private readonly IConfiguration config;
+        private readonly IMapper mapper;
 
         public AccountService(
             UserManager<User> userManager,
-            IConfiguration config)
+            IConfiguration config,
+            IMapper mapper)
         {
             this.userManager = userManager;
             this.config = config;
+            this.mapper = mapper;
         }
 
         public IdentityResult CreateUser(RegisterParams model)
@@ -60,6 +65,11 @@ namespace MessagingServiceApp.Services
             }
 
             return resultErrors;
+        }
+
+        public RegisterResponse GetRegisterResponseObject(RegisterParams model)
+        {
+            return mapper.Map<RegisterResponse>(model);
         }
 
         private List<Claim> GetListClaims(User user)
