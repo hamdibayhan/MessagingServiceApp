@@ -9,15 +9,22 @@ Technologies:
 #### For Starting the server with docker-compose
 
 * Fill db password for develeopment env with 'Psswrd123' in docker-compose.yml
-* docker-compose up --build
+```zsh
+    docker-compose up --build
+```
 
 #### Your server will run at http://localhost:5000
 
-#### For run test
+#### For running test
+```zsh
+    dotnet test /p:CollectCoverage=true /p:Include="[*]MessagingServiceApp.Controllers.*"
+```
 
-* dotnet test /p:CollectCoverage=true /p:Include="[*]MessagingServiceApp.Controllers.*"
 or with runsettings.xml
-* dotnet test --collect:"XPlat Code Coverage" --settings runsettings.xml /p:CollectCoverage=true
+
+```zsh
+    dotnet test --collect:"XPlat Code Coverage" --settings runsettings.xml /p:CollectCoverage=true
+```
 
 ## API Documentation
 
