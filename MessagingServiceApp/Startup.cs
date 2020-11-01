@@ -20,6 +20,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
+using Serilog;
 
 namespace MessagingServiceApp
 {
@@ -95,7 +96,7 @@ namespace MessagingServiceApp
             }
 
             app.UseHttpsRedirection();
-
+            app.UseSerilogRequestLogging();
             app.UseRouting();
 
             app.UseAuthentication();
