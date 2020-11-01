@@ -8,6 +8,7 @@ using MessagingServiceApp.Data.Entity;
 using MessagingServiceApp.Data.Interfaces;
 using MessagingServiceApp.Dto.ApiResponse;
 using MessagingServiceApp.Interfaces;
+using MessagingServiceApp.Libraries;
 using MessagingServiceApp.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
@@ -39,6 +40,8 @@ namespace MessagingServiceApp
             services.AddControllers().AddNewtonsoftJson(options =>
                 options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             );
+
+            services.AddScoped<UserActivityLoggingActionFilter>();
 
             services.AddMvc()
                 .ConfigureApiBehaviorOptions(options =>
