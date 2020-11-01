@@ -8,7 +8,7 @@ Technologies:
 
 #### For Starting the server with docker-compose
 
-* Fill db password in docker-compose.yml
+* Fill db password for develeopment env with 'Psswrd123' in docker-compose.yml
 * docker-compose up --build
 
 #### Your server will run at http://localhost:5000
@@ -244,6 +244,8 @@ If contact user not exist:
 
 ### User
 #### BlockUser - POST Method - http://localhost:5000/api/user/blockUser
+
+* You can change per page message count with MessageItemAmountPerPage key in appsettings file
 
 Header:
 * Authorization must be with Bearer Token
