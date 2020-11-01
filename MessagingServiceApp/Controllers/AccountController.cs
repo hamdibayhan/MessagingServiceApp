@@ -49,7 +49,10 @@ namespace MessagingServiceApp.Controllers
 
                 var result = accountService.CreateUser(model);
                 if (result.Succeeded)
-                    return Created("", Response<RegisterParams>.GetSuccess(model));
+                {
+                    var registerResponse = accountService.GetRegisterResponseObject(model);
+                    return Created("", Response<RegisterResponse>.GetSuccess(registerResponse));
+                }
                 else
                     return new BadRequestObjectResult(Response<Dictionary<string, string>>
                         .GetError(null, "There is one or more register error", accountService.GetIdentityErrorObject(result.Errors)));
