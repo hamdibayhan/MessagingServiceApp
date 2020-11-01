@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using MessagingServiceApp.Dto.ApiParameter;
 using MessagingServiceApp.Dto.ApiResponse;
 using MessagingServiceApp.Interfaces;
+using MessagingServiceApp.Libraries;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -32,6 +33,7 @@ namespace MessagingServiceApp.Controllers
         [HttpPost("blockUser")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
+        [ServiceFilter(typeof(UserActivityLoggingActionFilter))]
         public async Task<IActionResult> BlockUserAsync([FromBody] BlockUserParams blockUserParams)
         {
             try
@@ -52,7 +54,7 @@ namespace MessagingServiceApp.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex);
+                logger.LogError(ex, ex.Message);
             }
 
             return BadRequest(Response<string>.GetError(null, "An error occured"));

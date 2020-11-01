@@ -8,6 +8,7 @@ using MessagingServiceApp.Dto.ApiResponse;
 using System;
 using Microsoft.Extensions.Logging;
 using System.Collections.Generic;
+using MessagingServiceApp.Libraries;
 
 namespace MessagingServiceApp.Controllers
 {
@@ -33,6 +34,7 @@ namespace MessagingServiceApp.Controllers
         [HttpPost("sendMessage")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
+        [ServiceFilter(typeof(UserActivityLoggingActionFilter))]
         public async Task<IActionResult> SendMessageAsync([FromBody] SendMessageParams messageInfo)
         {
             try
@@ -49,7 +51,7 @@ namespace MessagingServiceApp.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex);
+                logger.LogError(ex, ex.Message);
             }
             return BadRequest(Response<string>.GetError(null, "An error occured"));
         }
@@ -58,6 +60,7 @@ namespace MessagingServiceApp.Controllers
         [HttpGet("messageList")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
+        [ServiceFilter(typeof(UserActivityLoggingActionFilter))]
         public async Task<IActionResult> MessageListAsync([FromBody] MessageListParams messageList)
         {
             try
@@ -75,7 +78,7 @@ namespace MessagingServiceApp.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex);
+                logger.LogError(ex, ex.Message);
             }
             return BadRequest(Response<string>.GetError(null, "An error occured"));
         }

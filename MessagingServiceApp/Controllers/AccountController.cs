@@ -7,6 +7,7 @@ using MessagingServiceApp.Data.Entity;
 using MessagingServiceApp.Dto.ApiParameter;
 using MessagingServiceApp.Dto.ApiResponse;
 using MessagingServiceApp.Interfaces;
+using MessagingServiceApp.Libraries;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
@@ -37,6 +38,7 @@ namespace MessagingServiceApp.Controllers
         [HttpPost("register")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
+        [ServiceFilter(typeof(UserActivityLoggingActionFilter))]
         public async Task<IActionResult> Register([FromBody] RegisterParams model)
         {
             try
@@ -54,7 +56,7 @@ namespace MessagingServiceApp.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex);
+                logger.LogError(ex, ex.Message);
             }
 
             return BadRequest(Response<string>.GetError(null, "An error occured"));
@@ -63,6 +65,7 @@ namespace MessagingServiceApp.Controllers
         [HttpPost("login")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
+        [ServiceFilter(typeof(UserActivityLoggingActionFilter))]
         public async Task<IActionResult> Login([FromBody] LoginParams model)
         {
             try
@@ -81,7 +84,7 @@ namespace MessagingServiceApp.Controllers
             }
             catch (Exception ex)
             {
-                logger.LogError(ex);
+                logger.LogError(ex, ex.Message);
             }
             return BadRequest(Response<string>.GetError(null, "An error occured"));
         }
