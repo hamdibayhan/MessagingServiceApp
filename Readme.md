@@ -16,6 +16,9 @@ Technologies:
 #### Your server will run at http://localhost:5000
 
 #### For running test
+
+* Test settings was adjusted only for Controller files. 
+
 ```zsh
     dotnet test /p:CollectCoverage=true /p:Include="[*]MessagingServiceApp.Controllers.*"
 ```
