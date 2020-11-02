@@ -67,7 +67,7 @@ namespace MessagingServiceApp.Controllers
         }
 
         // POST api/message/messageList
-        [HttpGet("messageList")]
+        [HttpPost("messageList")]
         [Consumes(MediaTypeNames.Application.Json)]
         [Produces(MediaTypeNames.Application.Json)]
         [ServiceFilter(typeof(UserActivityLoggingActionFilter))]
