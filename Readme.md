@@ -195,7 +195,7 @@ If user already blocked with contact user:
 }
 ```
 
-#### MessageList - GET Method - http://localhost:3000/api/chat/messageList
+#### MessageList - POST Method - http://localhost:5000/api/message/messageList
 
 Header:
 * Authorization must be with Bearer Token
