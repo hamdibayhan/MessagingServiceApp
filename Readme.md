@@ -8,7 +8,7 @@ Technologies:
 
 #### For Starting the server with docker-compose
 
-* Fill db password for develeopment env with 'Psswrd123' in docker-compose.yml
+* Fill sql db password in docker-compose.yml and (appsetting.json or appsetting.development.json(for development env))
 ```zsh
     docker-compose up --build
 ```

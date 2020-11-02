@@ -11,7 +11,7 @@ services:
     db:
         image: "microsoft/mssql-server-linux"
         environment:
-            SA_PASSWORD: ""
+            SA_PASSWORD: "..."
             ACCEPT_EULA: "Y"
         ports: 
           - "1433:1433"
